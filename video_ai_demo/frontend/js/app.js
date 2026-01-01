@@ -67,6 +67,12 @@ function init() {
         tab.addEventListener('click', () => handleModeSwitch(tab.dataset.mode));
     });
     
+    // 移动端侧边栏切换
+    const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
+    if (btnToggleSidebar) {
+        btnToggleSidebar.addEventListener('click', toggleSidebar);
+    }
+    
     // 文件上传
     setupFileUpload(elements.targetUpload, elements.targetFile, 'target');
     setupFileUpload(elements.userUpload, elements.userFile, 'user');
@@ -112,6 +118,25 @@ function init() {
             updatePlayheadPosition(progress);
         }
     });
+}
+
+// ========== 移动端侧边栏切换 ==========
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const btnToggle = document.getElementById('btn-toggle-sidebar');
+    
+    if (sidebar) {
+        sidebar.classList.toggle('collapsed');
+        
+        // 更新按钮图标
+        if (sidebar.classList.contains('collapsed')) {
+            btnToggle.textContent = '☰'; // 显示汉堡菜单图标
+            btnToggle.title = '显示侧边栏';
+        } else {
+            btnToggle.textContent = '✕'; // 显示关闭图标
+            btnToggle.title = '隐藏侧边栏';
+        }
+    }
 }
 
 // ========== 模式切换 ==========

@@ -108,6 +108,11 @@ body {
     color: white;
 }
 
+/* 移动端侧边栏切换按钮 - 桌面端默认隐藏 */
+.btn-toggle-sidebar {
+    display: none;
+}
+
 /* ========== 布局 ========== */
 .container {
     display: flex;
@@ -1294,6 +1299,7 @@ body {
 }
 
 /* ========== 响应式 ========== */
+/* ========== 响应式设计 - 平板 ========== */
 @media (max-width: 1200px) {
     .sidebar {
         width: 300px;
@@ -1304,19 +1310,388 @@ body {
     }
 }
 
+/* ========== 响应式设计 - 手机端 ========== */
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column;
+    /* 导航栏适配 */
+    .nav-content {
+        padding: var(--spacing-sm) var(--spacing-md);
     }
     
+    .logo {
+        font-size: 16px;
+    }
+    
+    .nav-tab {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    .nav-right .btn-secondary {
+        display: none; /* 隐藏帮助按钮 */
+    }
+    
+    /* 移动端侧边栏切换按钮 */
+    .btn-toggle-sidebar {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 12px;
+        font-size: 16px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        color: var(--color-text);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-toggle-sidebar:hover {
+        background: var(--color-card);
+    }
+    
+    .btn-toggle-sidebar:active {
+        transform: scale(0.95);
+    }
+    
+    /* 容器布局 */
+    .container {
+        flex-direction: column;
+        height: auto;
+        min-height: calc(100vh - 53px);
+    }
+    
+    /* 侧边栏适配 */
     .sidebar {
         width: 100%;
         border-right: none;
         border-bottom: 1px solid var(--color-border);
+        padding: var(--spacing-md);
+        max-height: none;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    
+    .sidebar.collapsed {
+        max-height: 0;
+        padding: 0;
+        overflow: hidden;
+        border-bottom: none;
+    }
+    
+    .section-title {
+        font-size: 20px;
+    }
+    
+    /* 主内容区 */
+    .main-content {
+        min-height: 60vh;
+    }
+    
+    /* 时间轴头部 */
+    .timeline-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: flex-start;
+    }
+    
+    .timeline-info {
+        width: 100%;
+    }
+    
+    .timeline-title {
+        font-size: 20px;
+    }
+    
+    .timeline-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .timeline-controls button {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+    
+    /* 时间标尺 */
+    .timeline-ruler {
+        font-size: 10px;
+    }
+    
+    /* 轨道 */
+    .track-header {
+        width: 80px;
+        font-size: 12px;
+        padding: var(--spacing-xs);
+    }
+    
+    .track-icon {
+        font-size: 16px;
+    }
+    
+    .track-name {
+        font-size: 11px;
+    }
+    
+    .track-content {
+        margin-left: 80px;
+    }
+    
+    /* 片段 */
+    .segment {
+        min-width: 40px;
+    }
+    
+    .segment-content {
+        padding: 4px;
+    }
+    
+    .segment-label {
+        font-size: 10px;
+    }
+    
+    .segment-value {
+        font-size: 9px;
+    }
+    
+    /* 视频预览 */
+    .video-preview-content {
+        height: 200px;
+    }
+    
+    .preview-video {
+        max-height: 200px;
+    }
+    
+    /* 播放控制 */
+    .playback-controls {
+        padding: var(--spacing-sm);
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+    }
+    
+    .btn-play {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    
+    .time-display {
+        font-size: 11px;
+    }
+    
+    .playback-slider {
+        flex: 1;
+        min-width: 100px;
+    }
+    
+    /* 详情面板 - 移动端全屏显示 */
+    .detail-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
+        transform: translateX(100%);
+        z-index: 2000;
+    }
+    
+    .detail-panel.active {
+        transform: translateX(0);
+    }
+    
+    .detail-header {
+        padding: var(--spacing-md);
+    }
+    
+    .detail-title {
+        font-size: 18px;
+    }
+    
+    .btn-close {
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+    }
+    
+    .detail-content {
+        padding: var(--spacing-md);
+    }
+    
+    .detail-section {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .detail-section-title {
+        font-size: 16px;
+    }
+    
+    /* 历史记录 */
+    .history-container {
+        padding: var(--spacing-md);
+    }
+    
+    .history-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: flex-start;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .history-title {
+        font-size: 20px;
     }
     
     .history-list {
         grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .history-item {
+        flex-direction: column;
+    }
+    
+    .history-thumbnail {
+        width: 100%;
+        height: 160px;
+    }
+    
+    .history-content {
+        padding: var(--spacing-md);
+    }
+    
+    .history-item-title {
+        font-size: 16px;
+    }
+    
+    .meta-item {
+        font-size: 11px;
+    }
+    
+    .learning-points-preview {
+        font-size: 12px;
+    }
+    
+    .learning-point {
+        font-size: 12px;
+    }
+    
+    /* 按钮适配 */
+    .btn-primary,
+    .btn-secondary {
+        font-size: 14px;
+        padding: 10px 16px;
+    }
+    
+    .btn-analyze {
+        width: 100%;
+    }
+    
+    /* 上传区域 */
+    .upload-placeholder {
+        padding: var(--spacing-lg);
+    }
+    
+    .upload-icon {
+        font-size: 36px;
+    }
+    
+    .upload-text {
+        font-size: 14px;
+    }
+    
+    .upload-hint {
+        font-size: 11px;
+    }
+    
+    /* 选项卡片 */
+    .options-card {
+        padding: var(--spacing-md);
+    }
+    
+    .options-title {
+        font-size: 16px;
+    }
+    
+    .option-label {
+        font-size: 13px;
+    }
+    
+    .option-input {
+        font-size: 14px;
+    }
+    
+    /* 空状态 */
+    .empty-icon {
+        font-size: 48px;
+    }
+    
+    .empty-title {
+        font-size: 20px;
+    }
+    
+    .empty-text {
+        font-size: 14px;
+    }
+    
+    /* 加载状态 */
+    .loading-title {
+        font-size: 18px;
+    }
+    
+    .loading-text {
+        font-size: 13px;
+    }
+}
+
+/* ========== 超小屏幕适配 ========== */
+@media (max-width: 480px) {
+    .nav-content {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    .logo {
+        font-size: 14px;
+    }
+    
+    .nav-tab {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+    
+    .sidebar {
+        padding: var(--spacing-sm);
+    }
+    
+    .track-header {
+        width: 60px;
+    }
+    
+    .track-content {
+        margin-left: 60px;
+    }
+    
+    .segment {
+        min-width: 30px;
+    }
+    
+    .video-preview-content {
+        height: 160px;
+    }
+    
+    .preview-video {
+        max-height: 160px;
+    }
+    
+    .history-thumbnail {
+        height: 120px;
+    }
+    
+    .btn-delete-history {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
     }
 }
 
