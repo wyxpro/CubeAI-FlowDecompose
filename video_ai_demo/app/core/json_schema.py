@@ -30,6 +30,17 @@ FEATURE_SCHEMA = {
                     }
                 }
             }
+        },
+        "detailed_description": {
+            "type": "object",
+            "description": "详细特征描述",
+            "properties": {
+                "summary": {"type": "string"},
+                "technical_terms": {"type": "array", "items": {"type": "string"}},
+                "purpose": {"type": "string"},
+                "parameters": {"type": "object"},
+                "diagram": {"type": "string"}
+            }
         }
     }
 }

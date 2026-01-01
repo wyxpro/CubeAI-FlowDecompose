@@ -204,6 +204,18 @@ class MMHLLMClient:
             if not isinstance(normalized_feature["evidence"]["time_ranges_ms"], list):
                 normalized_feature["evidence"]["time_ranges_ms"] = [[start_ms, end_ms]]
             
+            # 处理详细描述字段（可选）
+            if "detailed_description" in feature:
+                detailed = feature["detailed_description"]
+                if isinstance(detailed, dict):
+                    normalized_feature["detailed_description"] = {
+                        "summary": detailed.get("summary", ""),
+                        "technical_terms": detailed.get("technical_terms", []),
+                        "purpose": detailed.get("purpose", ""),
+                        "parameters": detailed.get("parameters", {}),
+                        "diagram": detailed.get("diagram", "")
+                    }
+            
             normalized.append(normalized_feature)
         
         logger.info(f"规范化了{len(normalized)}个特征")
@@ -358,7 +370,7 @@ class MMHLLMClient:
             f"- {modules_desc.get(m, m)}" for m in enabled_modules
         ])
         
-        return f"""请分析这个镜头片段的影视特征。
+        return f"""请分析这个镜头片段的影视特征，并提供详细的专业解读。
 
 镜头ID: {segment_id}
 时间范围: {start_ms}ms - {end_ms}ms
@@ -377,6 +389,16 @@ class MMHLLMClient:
     "confidence": 0.85,
     "evidence": {{
       "time_ranges_ms": [[{start_ms}, {end_ms}]]
+    }},
+    "detailed_description": {{
+      "summary": "摄像机以缓慢的速度向拍摄主体推进，焦距逐渐拉近",
+      "technical_terms": ["推镜头", "Dolly In", "景深变化"],
+      "purpose": "引导观众注意力聚焦到主体，营造逐渐接近、深入的感觉，增强情感张力",
+      "parameters": {{
+        "speed": "缓慢",
+        "distance": "中距离推进",
+        "focal_length_change": "无明显变化"
+      }}
     }}
   }},
   {{
@@ -386,6 +408,17 @@ class MMHLLMClient:
     "confidence": 0.90,
     "evidence": {{
       "time_ranges_ms": [[{start_ms}, {end_ms}]]
+    }},
+    "detailed_description": {{
+      "summary": "经典的三点布光系统，包含主光、补光和轮廓光",
+      "technical_terms": ["Key Light主光", "Fill Light补光", "Back Light轮廓光"],
+      "purpose": "塑造人物立体感，突出轮廓，营造专业的影像质感",
+      "parameters": {{
+        "key_light_position": "左前方45度，高于眼平",
+        "fill_light_ratio": "1:2（主光与补光比例）",
+        "back_light_position": "后上方，勾勒轮廓"
+      }},
+      "diagram": "主光源↗️（左前上） + 补光源➡️（右前方） + 轮廓光⬇️（后上方）"
     }}
   }},
   {{
@@ -395,16 +428,34 @@ class MMHLLMClient:
     "confidence": 0.80,
     "evidence": {{
       "time_ranges_ms": [[{start_ms}, {end_ms}]]
+    }},
+    "detailed_description": {{
+      "summary": "整体画面偏向暖色系，色温较高，橙黄色调为主",
+      "technical_terms": ["暖色温", "Orange & Teal", "黄金时段色调"],
+      "purpose": "营造温暖、舒适、怀旧或浪漫的氛围，增强情感共鸣",
+      "parameters": {{
+        "color_temperature": "5500K-6500K（偏暖）",
+        "saturation": "中等偏高（60-70%）",
+        "contrast": "柔和对比",
+        "shadow_tint": "轻微橙色偏移",
+        "highlight_tint": "柔和黄色"
+      }}
     }}
   }}
 ]
 ```
 
 关键要求：
-1. 每个feature的value字段只能描述一个单一特征，不能用"、"或"和"连接多个特征
-2. confidence必须是0-1之间的数值
-3. 只输出JSON数组，不要其他文字
-4. 如果某个特征不明显，可以不输出该项
+1. value字段：简洁的特征名称，单一特征，不使用连接词
+2. detailed_description字段：
+   - summary：特征的简要描述（1-2句话）
+   - technical_terms：相关专业术语（中英文均可）
+   - purpose：此特征的镜头意义和艺术效果
+   - parameters：具体的技术参数（根据类别提供）
+   - diagram：（仅lighting类别）简单的光路图示意
+3. confidence：0-1之间的数值
+4. 只输出JSON数组，不要其他文字
+5. 如果某个特征不明显，可以不输出该项
 """
     
     def _extract_json_from_text(self, text: str) -> Any:

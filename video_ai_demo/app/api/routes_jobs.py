@@ -100,6 +100,7 @@ class JobResponse(BaseModel):
     status: str
     progress: Optional[JobProgress] = None
     result: Optional[Dict[str, Any]] = None
+    partial_result: Optional[Dict[str, Any]] = None  # 部分结果（流式更新）
     error: Optional[JobErrorInfo] = None
     created_at: datetime
     updated_at: datetime
@@ -192,12 +193,19 @@ async def get_job(job_id: str):
                 message=job.progress_message
             )
         
-        # 结果
+        # 最终结果
         if job.status == JobStatus.SUCCEEDED and job.result_json:
             try:
                 response.result = json.loads(job.result_json)
             except json.JSONDecodeError:
                 logger.error(f"Job {job_id} 结果JSON解析失败")
+        
+        # 部分结果（用于流式显示）
+        if job.status == JobStatus.RUNNING and job.partial_result_json:
+            try:
+                response.partial_result = json.loads(job.partial_result_json)
+            except json.JSONDecodeError:
+                logger.error(f"Job {job_id} 部分结果JSON解析失败")
         
         # 错误
         if job.status == JobStatus.FAILED:

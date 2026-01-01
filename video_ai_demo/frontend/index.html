@@ -133,14 +133,13 @@
                     <div class="timeline-controls">
                         <button class="btn-icon-only" id="btn-zoom-out" title="缩小">−</button>
                         <button class="btn-icon-only" id="btn-zoom-in" title="放大">+</button>
+                        <button class="btn-secondary" id="btn-test-playhead" style="display:none;">测试播放头</button>
                         <button class="btn-secondary" id="btn-export">导出结果</button>
                     </div>
                 </div>
 
                 <!-- 时间标尺 -->
-                <div class="timeline-ruler" id="timeline-ruler">
-                    <div class="playhead" id="playhead"></div>
-                </div>
+                <div class="timeline-ruler" id="timeline-ruler"></div>
 
                 <!-- 视频预览轨道 - 固定不滚动 -->
                 <div class="track video-preview-track fixed-track">
@@ -157,6 +156,8 @@
 
                 <!-- 轨道区域 - 可滚动 -->
                 <div class="tracks-container" id="tracks-container">
+                    <!-- 播放头竖线 -->
+                    <div class="playhead" id="playhead"></div>
 
                     <!-- 视频片段轨道 -->
                     <div class="track video-track">
@@ -209,16 +210,19 @@
             </div>
 
             <!-- 详情面板 -->
-            <div class="detail-panel" id="detail-panel" style="display: none;">
+            <div class="detail-panel" id="detail-panel">
                 <div class="detail-header">
-                    <h3 class="detail-title">特征详情</h3>
+                    <h3 class="detail-title">镜头详细分析</h3>
                     <button class="btn-close" id="btn-close-detail">×</button>
                 </div>
-                <div class="detail-content" id="detail-content"></div>
+                <div class="detail-content" id="detail-content">
+                    <div class="detail-loading">加载中...</div>
+                </div>
             </div>
         </main>
     </div>
 
+    <script src="/static/js/feature-meanings.js"></script>
     <script src="/static/js/app.js"></script>
 </body>
 </html>

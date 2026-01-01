@@ -69,6 +69,25 @@ class PipelineOrchestrator:
                 threshold=options.get("scene_detection", {}).get("threshold", 27.0)
             )
             logger.info(f"CV检测到{len(cv_segments)}个场景")
+            
+            # 立即保存CV检测结果（无特征）
+            partial_result = {
+                "mode": "learn",
+                "target": {
+                    "asset_id": ingest_result.get("asset_id"),
+                    "segments": [
+                        {
+                            **seg,
+                            "features": [],
+                            "analyzing": True  # 标记为分析中
+                        }
+                        for seg in cv_segments
+                    ],
+                    "detection_method": "cv",
+                    "analyzing": True
+                }
+            }
+            self._save_partial_result(partial_result)
         else:
             cv_segments = None
         
@@ -297,9 +316,10 @@ class PipelineOrchestrator:
         logger.info(f"开始分析{len(cv_segments)}个CV检测的场景")
         
         segments_with_features = []
+        total_segments = len(cv_segments)
         
         # 为每个CV检测的场景分析特征
-        for segment in cv_segments:
+        for idx, segment in enumerate(cv_segments):
             segment_id = segment["segment_id"]
             start_ms = segment["start_ms"]
             end_ms = segment["end_ms"]
@@ -353,7 +373,8 @@ class PipelineOrchestrator:
                     "start_ms": start_ms,
                     "end_ms": end_ms,
                     "duration_ms": end_ms - start_ms,
-                    "features": normalized_features
+                    "features": normalized_features,
+                    "analyzing": False  # 标记为分析完成
                 })
                 
                 logger.info(f"场景{segment_id}分析完成，{len(normalized_features)}个特征")
@@ -366,8 +387,37 @@ class PipelineOrchestrator:
                     "start_ms": start_ms,
                     "end_ms": end_ms,
                     "duration_ms": end_ms - start_ms,
-                    "features": []
+                    "features": [],
+                    "analyzing": False
                 })
+            
+            # 立即更新部分结果
+            progress_percent = 60 + (idx + 1) / total_segments * 25  # 60-85%
+            self._update_progress(
+                "feature_analysis",
+                progress_percent,
+                f"分析特征 {idx + 1}/{total_segments}"
+            )
+            
+            # 构建当前的部分结果（包含已分析的和待分析的）
+            all_segments = segments_with_features + [
+                {
+                    **cv_segments[i],
+                    "features": [],
+                    "analyzing": True
+                }
+                for i in range(idx + 1, total_segments)
+            ]
+            
+            partial_result = {
+                "mode": "learn",
+                "target": {
+                    "segments": all_segments,
+                    "detection_method": "cv",
+                    "analyzing": idx + 1 < total_segments
+                }
+            }
+            self._save_partial_result(partial_result)
         
         return {"segments": segments_with_features}
     
@@ -380,8 +430,10 @@ class PipelineOrchestrator:
     ) -> str:
         """构建仅分析特征的提示词（不做场景切分）"""
         
+        from ..core.shot_terminology import get_shot_terminology_prompt
+        
         modules_desc = {
-            "camera_motion": "运镜方式（如推镜、拉镜、平移、固定等）",
+            "camera_motion": "运镜方式和拍摄角度",
             "lighting": "光线布局（如主光位置、补光、轮廓光等）",
             "color_grading": "调色风格（如色温、饱和度、对比度风格等）"
         }
@@ -390,7 +442,12 @@ class PipelineOrchestrator:
             f"- {modules_desc.get(m, m)}" for m in enabled_modules
         ])
         
+        # 获取标准术语
+        shot_terminology = get_shot_terminology_prompt()
+        
         return f"""请分析这个视频片段的影视特征。
+
+{shot_terminology}
 
 片段ID: {segment_id}
 时间范围: {start_ms}ms - {end_ms}ms
@@ -405,8 +462,26 @@ class PipelineOrchestrator:
   {{
     "category": "camera_motion",
     "type": "push_in",
-    "value": "缓慢推镜",
+    "value": "推镜头 - 缓慢向前推进",
     "confidence": 0.85,
+    "evidence": {{
+      "time_ranges_ms": [[{start_ms}, {end_ms}]]
+    }}
+  }},
+  {{
+    "category": "camera_motion",
+    "type": "medium_shot",
+    "value": "中景 - 人物腰部以上",
+    "confidence": 0.90,
+    "evidence": {{
+      "time_ranges_ms": [[{start_ms}, {end_ms}]]
+    }}
+  }},
+  {{
+    "category": "camera_motion",
+    "type": "low_angle",
+    "value": "仰拍角度 - 向上仰拍",
+    "confidence": 0.82,
     "evidence": {{
       "time_ranges_ms": [[{start_ms}, {end_ms}]]
     }}
@@ -434,10 +509,14 @@ class PipelineOrchestrator:
 
 要求：
 1. 必须分析所有启用的特征类别（camera_motion、lighting、color_grading）
-2. 每个category至少输出一个特征
-3. 每个feature的value只描述一个特征
-4. confidence为0-1的数值
-5. 只输出JSON数组，不要其他文字
+2. camera_motion类别必须包含：
+   - 景别（全景/中全景/中景/近景/特写）
+   - 运镜方式（摇镜头/移镜头/推镜头/拉镜头/跟踪镜头/升格镜头/降格镜头/固定镜头）
+   - 拍摄角度（贴地角度/仰拍角度/俯拍角度/鸟瞰镜头）- 至少识别3个以上特征
+3. 每个feature的type使用英文key（如push_in, medium_shot, low_angle）
+4. 每个feature的value使用标准中文术语
+5. confidence为0-1的数值
+6. 只输出JSON数组，不要其他文字
 """
     
     def _update_progress(self, stage: str, percent: float, message: str):
@@ -445,6 +524,12 @@ class PipelineOrchestrator:
         with get_db() as db:
             job_repo = JobRepository(db)
             job_repo.update_progress(self.job_id, stage, percent, message)
+    
+    def _save_partial_result(self, partial_result: Dict[str, Any]):
+        """保存部分结果（用于流式更新）"""
+        with get_db() as db:
+            job_repo = JobRepository(db)
+            job_repo.save_partial_result(self.job_id, partial_result)
 
 
 # 全局Job运行器（简单版本：内存字典）

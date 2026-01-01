@@ -75,9 +75,17 @@ class JobRepository:
         return job
     
     def save_result(self, job_id: str, result: dict) -> Job:
-        """保存Job结果"""
+        """保存Job最终结果"""
         job = self.get_or_raise(job_id)
         job.result_json = json.dumps(result, ensure_ascii=False)
+        job.updated_at = datetime.utcnow()
+        self.db.flush()
+        return job
+    
+    def save_partial_result(self, job_id: str, partial_result: dict) -> Job:
+        """保存Job部分结果（用于流式更新）"""
+        job = self.get_or_raise(job_id)
+        job.partial_result_json = json.dumps(partial_result, ensure_ascii=False)
         job.updated_at = datetime.utcnow()
         self.db.flush()
         return job

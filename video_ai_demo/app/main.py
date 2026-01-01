@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from .api import routes_jobs, routes_virtual_motion
+from .api import routes_jobs, routes_virtual_motion, routes_terminology
 from .db.session import init_db
 from .core.config import settings
 from .core.logging import logger
@@ -46,6 +46,7 @@ app.add_middleware(
 # 注册路由
 app.include_router(routes_jobs.router)
 app.include_router(routes_virtual_motion.router)
+app.include_router(routes_terminology.router)
 
 # 挂载静态文件
 frontend_dir = Path(__file__).parent.parent / "frontend"

@@ -37,7 +37,8 @@ class Job(Base):
     progress_message = Column(String)  # 进度消息
     
     # 结果
-    result_json = Column(Text)  # JSON字符串
+    result_json = Column(Text)  # 最终JSON字符串
+    partial_result_json = Column(Text)  # 部分结果JSON（流式更新）
     error_message = Column(Text)  # 错误信息
     error_details = Column(Text)  # 错误详情JSON
     
