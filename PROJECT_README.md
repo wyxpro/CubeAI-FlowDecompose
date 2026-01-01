@@ -1367,6 +1367,11 @@ npm install
 
 ### 开源项目
 
+感谢团队的倾心付出：
+@Valentina_Yang
+@Kindin-X
+@晓叶
+
 感谢以下优秀的开源项目：
 
 **后端**:
@@ -1393,9 +1398,9 @@ npm install
 
 ## 📞 联系方式
 
-- **项目主页**: [GitHub Repository](https://github.com/your-repo/intuition-x)
-- **问题反馈**: [GitHub Issues](https://github.com/your-repo/intuition-x/issues)
-- **邮箱**: dev@intuition-x.com
+- **项目主页**: [GitHub Repository](https://github.com/tyfuser/CubeAI-FlowDecompose)
+- **问题反馈**: [GitHub Issues](https://github.com/tyfuser/CubeAI-FlowDecompose/issues)
+- **邮箱**: yifant584@gmail.com
 - **文档**: 见 `Backend/video_ai_demo/` 和 `frontend/` 目录
 
 ---
@@ -1444,7 +1449,7 @@ SOFTWARE.
 
 **Intuition-X - 智能视频分析与创作辅助平台**
 
-Made with ❤️ by Intuition-X Team
+Made with ❤️ by Jumping_Cats Team
 
 [开始使用](#-快速开始) • [查看文档](#-开发文档) • [反馈问题](#-联系方式)
 
