@@ -1,14 +1,12 @@
-# Cube AI 魔方 AI - 项目总文档
+# 🎬 Cube AI —— 抖音爆款视频 AI 拆解与创作赋能工具
 
 <div align="center">
-
+  
+**智能视频分析与创作辅助平台**
 ![Version](https://img.shields.io/badge/version-2.1.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Backend](https://img.shields.io/badge/Backend-FastAPI-009688)
 ![Frontend](https://img.shields.io/badge/Frontend-React-61dafb)
-
-**智能视频分析与创作辅助平台**
-
 [快速开始](#-快速开始) • [功能特性](#-功能特性) • [技术架构](#-技术架构) • [部署指南](#-部署指南) • [开发文档](#-开发文档)
 
 </div>
@@ -36,15 +34,12 @@
 
 ## 🎯 项目概述
 
-**CubeAI (魔方 AI)** 是一个专业的视频分析与创作辅助平台，利用多模态AI技术，帮助内容创作者深度分析视频特性、学习拍摄技巧、生成创作脚本，提升视频创作效率和质量。
-
+**CubeAI (魔方 AI)** 是一款面向视频创作者的AI驱动型创作辅助工具。核心依托AI多模态技术，实现对爆款短视频的全维度拆解与多端适配，输出结构化脚本分镜与实时AR拍摄建议，构建“理解-表达-转化-优化”全链路赋能体系，针对性优化自身作品，助力创作者高效复用爆款逻辑、降低创作门槛，并提升内容传播效果!
 ### 项目信息
 
 | 项目 | 信息 |
 |------|------|
 | **名称** | CubeAI-X / 魔方 AI (Rubik AI Engine) |
-| **版本** | v2.1.0 |
-| **状态** | ✅ 生产就绪 |
 | **开发模式** | 前后端分离 |
 | **后端框架** | FastAPI (Python 3.9+) |
 | **前端框架** | React 18 + TypeScript |
@@ -528,11 +523,6 @@ Cube AI/
 
 ### 环境要求
 
-#### 系统要求
-- **操作系统**: macOS / Linux / Windows
-- **内存**: 最低 4GB，推荐 8GB+
-- **磁盘空间**: 最低 10GB（用于视频存储）
-
 #### 软件依赖
 
 **后端**:
@@ -746,7 +736,7 @@ npm run dev
 
 ### 脚本创作
 
-1. 完成视频分析后，进入「创作中心」
+1. 完成视频分析后，进入「分镜脚本」
 2. 选择创作策略：
    - 故事叙述型
    - 知识分享型
@@ -818,44 +808,6 @@ docker run -d -p 8000:8000 \
   Cube AI-backend
 ```
 
-**方式 2: 使用 Systemd（Linux）**
-
-```ini
-# /etc/systemd/system/intuition-backend.service
-[Unit]
-Description=Cube AI Backend Service
-After=network.target
-
-[Service]
-Type=simple
-User=www-data
-WorkingDirectory=/var/www/Cube AI/Backend/video_ai_demo
-Environment="PATH=/usr/local/bin:/usr/bin:/bin"
-ExecStart=/usr/local/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-```bash
-sudo systemctl enable intuition-backend
-sudo systemctl start intuition-backend
-sudo systemctl status intuition-backend
-```
-
-**方式 3: 使用 Nginx + Gunicorn**
-
-```bash
-# 安装 Gunicorn
-pip install gunicorn
-
-# 启动服务
-gunicorn app.main:app \
-  --workers 4 \
-  --worker-class uvicorn.workers.UvicornWorker \
-  --bind 0.0.0.0:8000
-```
 
 #### 前端部署
 
