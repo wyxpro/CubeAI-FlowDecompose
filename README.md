@@ -3,10 +3,12 @@
 <div align="center">
   
 **智能视频分析与创作辅助平台**
+
 ![Version](https://img.shields.io/badge/version-2.1.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Backend](https://img.shields.io/badge/Backend-FastAPI-009688)
 ![Frontend](https://img.shields.io/badge/Frontend-React-61dafb)
+
 [快速开始](#-快速开始) • [功能特性](#-功能特性) • [技术架构](#-技术架构) • [部署指南](#-部署指南) • [开发文档](#-开发文档)
 
 </div>
@@ -44,7 +46,6 @@
 | **后端框架** | FastAPI (Python 3.9+) |
 | **前端框架** | React 18 + TypeScript |
 | **AI 模型** | Qwen2.5-VL, Google Gemini |
-| **许可证** | MIT |
 
 ### 适用场景
 
