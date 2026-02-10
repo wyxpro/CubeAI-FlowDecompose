@@ -1,4 +1,4 @@
-# 🎬 Cube AI —— 抖音爆款视频 AI 拆解与创作赋能工具
+# 🎬 Cube AI — 抖音爆款视频 AI 拆解与创作赋能工具
 
 <div align="center">
   
@@ -37,7 +37,7 @@
 ## 🎯 项目概述
 
 **CubeAI (魔方 AI)** 是一款面向视频创作者的AI驱动型创作辅助工具。核心依托AI多模态技术，实现对爆款短视频的全维度拆解与多端适配，输出结构化脚本分镜与实时AR拍摄建议，构建“理解-表达-转化-优化”全链路赋能体系，针对性优化自身作品，助力创作者高效复用爆款逻辑、降低创作门槛，并提升内容传播效果!
-
+**抖音业务场景应用文档：** https://my.feishu.cn/wiki/OzfywR9XwivhrDk1iZfcMJ01n4e
 ### 适用场景
 
 - 🎬 **视频创作者** - 学习爆款视频技巧
@@ -46,6 +46,10 @@
 - ✍️ **编剧/导演** - AI 辅助脚本创作
 - 🎓 **教育机构** - 视频制作教学
 - 📊 **数据分析师** - 视频内容研究
+<img width="1280" height="644" alt="image" src="https://github.com/user-attachments/assets/55e64cf7-6853-44b9-ae06-bde0733cd19e" />
+<img width="1280" height="727" alt="image" src="https://github.com/user-attachments/assets/130b4169-9075-496f-ba5a-c856d14001cb" />
+<img width="1111" height="992" alt="image" src="https://github.com/user-attachments/assets/416fd974-3dd8-406f-8640-29bd3ceb88f8" />
+<img width="1297" height="891" alt="image" src="https://github.com/user-attachments/assets/0f7c13a9-b9aa-4171-9d05-f09da6950611" />
 
 ---
 
